@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Disaster Scenario | CoastalResilience</title>
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        body {
+            background: #0F172A;
+        }
+
+        .scenario-page {
+            padding: 50px 8%;
+        }
+
+        .scenario-header {
+            margin-bottom: 35px;
+        }
+
+        .scenario-header h1 {
+            font-size: 38px;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .scenario-header p {
+            color: #94A3B8;
+            font-size: 15px;
+            line-height: 1.7;
+            max-width: 700px;
+        }
+
+        .scenario-container {
+            max-width: 900px;
+            background: #182232;
+            border: 1px solid #293548;
+            border-radius: 14px;
+            padding: 30px;
+        }
+
+        .section-title {
+            color: #34D399;
+            font-size: 15px;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: #CBD5E1;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 13px;
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #FFFFFF;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #059669;
+        }
+
+        .form-help {
+            margin-top: 6px;
+            color: #64748B;
+            font-size: 10px;
+        }
+
+        .scenario-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .run-btn {
+            background: #059669;
+            color: #FFFFFF;
+            border: 1px solid #059669;
+            padding: 13px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .run-btn:hover {
+            background: #047857;
+        }
+
+        .reset-btn {
+            background: transparent;
+            color: #CBD5E1;
+            border: 1px solid #475569;
+            padding: 13px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .reset-btn:hover {
+            border-color: #059669;
+            color: #34D399;
+        }
+
+        .info-box {
+            margin-top: 30px;
+            padding: 18px;
+            border-radius: 10px;
+            background: rgba(5, 150, 105, 0.08);
+            border: 1px solid rgba(5, 150, 105, 0.25);
+        }
+
+        .info-box h3 {
+            color: #34D399;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: #94A3B8;
+            font-size: 12px;
+            line-height: 1.6;
+            margin: 6px 0;
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 22px;
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid #334155;
+        }
+
+        .result-box h3 {
+            color: #34D399;
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.35);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #94A3B8;
+            font-size: 12px;
+        }
+
+        .result-value {
+            color: #FFFFFF;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .risk-high {
+            color: #EF4444 !important;
+        }
+
+        .risk-medium {
+            color: #EAB308 !important;
+        }
+
+        .risk-low {
+            color: #34D399 !important;
+        }
+
+        .risk-score {
+            font-size: 20px !important;
+            font-weight: 700;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #34D399;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .back-link:hover {
+            color: #6EE7B7;
+        }
+
+        @media (max-width: 700px) {
+
+            .scenario-page {
+                padding: 35px 5%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scenario-header h1 {
+                font-size: 30px;
+            }
+
+            .result-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <span class="logo-icon">◈</span>
+
+            <div>
+
+                <h2>CoastalResilience</h2>
+
+                <small>
+                    Disaster Scenario Simulator
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            System Online
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- SCENARIO PAGE -->
+
+    <main class="scenario-page">
+
+
+        <div class="scenario-header">
+
+            <h1>Run Disaster Scenario</h1>
+
+            <p>
+                Configure a hypothetical coastal disaster scenario.
+                These parameters are processed by the AI prediction
+                engine to estimate the potential risk level.
+            </p>
+
+        </div>
+
+
+
+        <div class="scenario-container">
+
+
+            <div class="section-title">
+                SCENARIO PARAMETERS
+            </div>
+
+
+
+            <!-- SCENARIO FORM -->
+
+            <form method="POST" action="/scenario">
+
+
+                <div class="form-grid">
+
+
+                    <!-- DISASTER TYPE -->
+
+                    <div class="form-group">
+
+                        <label for="disaster_type">
+                            Disaster Type
+                        </label>
+
+                        <select
+                            id="disaster_type"
+                            name="disaster_type">
+
+                            <option value="cyclone">
+                                Cyclone
+                            </option>
+
+                            <option value="storm_surge">
+                                Storm Surge
+                            </option>
+
+                            <option value="coastal_flood">
+                                Coastal Flood
+                            </option>
+
+                            <option value="heavy_rainfall">
+                                Heavy Rainfall
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- RAINFALL -->
+
+                    <div class="form-group">
+
+                        <label for="rainfall">
+                            Rainfall (mm)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="rainfall"
+                            name="rainfall"
+                            min="0"
+                            step="0.1"
+                            placeholder="Example: 120"
+                            required>
+
+                        <span class="form-help">
+                            Recent or forecast rainfall
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- WIND SPEED -->
+
+                    <div class="form-group">
+
+                        <label for="wind_speed">
+                            Wind Speed (km/h)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="wind_speed"
+                            name="wind_speed"
+                            min="0"
+                            step="0.1"
+                            placeholder="Example: 90"
+                            required>
+
+                        <span class="form-help">
+                            Maximum expected wind speed
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- TIDE LEVEL -->
+
+                    <div class="form-group">
+
+                        <label for="tide_level">
+                            Tide Level (m)
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.1"
+                            id="tide_level"
+                            name="tide_level"
+                            min="0"
+                            placeholder="Example: 2.5"
+                            required>
+
+                        <span class="form-help">
+                            Expected coastal tide level
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- ELEVATION -->
+
+                    <div class="form-group">
+
+                        <label for="elevation">
+                            Average Elevation (m)
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.1"
+                            id="elevation"
+                            name="elevation"
+                            min="0"
+                            placeholder="Example: 8"
+                            required>
+
+                        <span class="form-help">
+                            Average elevation of the area
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- POPULATION -->
+
+                    <div class="form-group">
+
+                        <label for="population">
+                            Exposed Population
+                        </label>
+
+                        <input
+                            type="number"
+                            id="population"
+                            name="population"
+                            min="0"
+                            placeholder="Example: 5000"
+                            required>
+
+                        <span class="form-help">
+                            Estimated exposed population
+                        </span>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="scenario-actions">
+
+                    <button
+                        type="submit"
+                        class="run-btn">
+
+                        Run Scenario
+
+                    </button>
+
+
+                    <button
+                        type="reset"
+                        class="reset-btn">
+
+                        Reset
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+
+            <!-- AI RESULT -->
+
+            {% if scenario %}
+
+            <div class="result-box">
+
+                <h3>
+                    AI Risk Assessment Result
+                </h3>
+
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        Disaster Type
+                    </span>
+
+                    <span class="result-value">
+                        {{ scenario.disaster_type | replace('_', ' ') | title }}
+                    </span>
+
+                </div>
+
+
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        Rainfall
+                    </span>
+
+                    <span class="result-value">
+                        {{ scenario.rainfall }} mm
+                    </span>
+
+                </div>
+
+
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        Wind Speed
+                    </span>
+
+                    <span class="result-value">
+                        {{ scenario.wind_speed }} km/h
+                    </span>
+
+                </div>
+
+
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        Tide Level
+                    </span>
+
+                    <span class="result-value">
+                        {{ scenario.tide_level }} m
+                    </span>
+
+                </div>
+
+
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        Average Elevation
+                    </span>
+
+                    <span class="result-value">
+                        {{ scenario.elevation }} m
+                    </span>
+
+                </div>
+
+
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        Exposed Population
+                    </span>
+
+                    <span class="result-value">
+                        {{ scenario.population }}
+                    </span>
+
+                </div>
+
+
+
+                <!-- PREDICTED RISK -->
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        AI Predicted Risk
+                    </span>
+
+
+                    {% if scenario.predicted_risk == "High" %}
+
+                    <span class="result-value risk-high">
+                        HIGH RISK
+                    </span>
+
+                    {% elif scenario.predicted_risk == "Medium" %}
+
+                    <span class="result-value risk-medium">
+                        MEDIUM RISK
+                    </span>
+
+                    {% else %}
+
+                    <span class="result-value risk-low">
+                        LOW RISK
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <!-- RISK SCORE -->
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        Risk Score
+                    </span>
+
+                    <span class="result-value risk-score">
+
+                        {{ scenario.risk_score }} / 100
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+            {% endif %}
+
+
+
+            <!-- INFORMATION BOX -->
+
+            <div class="info-box">
+
+                <h3>
+                    AI Risk Assessment
+                </h3>
+
+                <p>
+                    The prototype uses environmental and
+                    population parameters to estimate the
+                    potential disaster risk level.
+                </p>
+
+                <p>
+                    The prediction considers rainfall,
+                    wind speed, tide level, elevation and
+                    exposed population.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- BACK BUTTON -->
+
+        <a href="/" class="back-link">
+            ← Back to Command Center
+        </a>
+
+
+    </main>
+
+
+</body>
+
+</html>

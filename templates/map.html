@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CoastalResilience | Risk Map</title>
+
+    <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #111827;
+            color: white;
+        }
+
+        .navbar {
+            height: 70px;
+            background: #182232;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            border-bottom: 1px solid #263244;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 9px;
+            background: #059669;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: #34d399;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 13px;
+            color: #d1d5db;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+
+        .page-header {
+            padding: 35px 50px 20px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #9ca3af;
+            font-size: 15px;
+        }
+
+        .map-wrapper {
+            margin: 0 50px 30px;
+            background: #182232;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #263244;
+        }
+
+        #map {
+            width: 100%;
+            height: 580px;
+        }
+
+        .map-info {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #d1d5db;
+            font-size: 13px;
+        }
+
+        .legend-box {
+            width: 13px;
+            height: 13px;
+            border-radius: 3px;
+        }
+
+        .high {
+            background: #ef4444;
+        }
+
+        .medium {
+            background: #eab308;
+        }
+
+        .low {
+            background: #10b981;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            background: #059669;
+            color: white;
+            padding: 11px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: #047857;
+        }
+
+        .scenario-panel {
+            margin: 0 50px 30px;
+            background: #182232;
+            border: 1px solid #263244;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .scenario-panel h2 {
+            font-size: 20px;
+            margin-bottom: 18px;
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .scenario-card {
+            background: #111827;
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid #263244;
+        }
+
+        .scenario-card span {
+            display: block;
+            color: #9ca3af;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .scenario-card strong {
+            font-size: 17px;
+        }
+
+        .risk-high {
+            color: #ef4444;
+        }
+
+        .risk-medium {
+            color: #eab308;
+        }
+
+        .risk-low {
+            color: #10b981;
+        }
+
+        .demo-note {
+            margin: 0 50px 40px;
+            padding: 15px 20px;
+            border-left: 4px solid #f97316;
+            background: #182232;
+            color: #d1d5db;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 900px) {
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .page-header {
+                padding: 25px 20px 15px;
+            }
+
+            .map-wrapper {
+                margin: 0 20px 20px;
+            }
+
+            #map {
+                height: 500px;
+            }
+
+            .scenario-panel {
+                margin: 0 20px 20px;
+            }
+
+            .scenario-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .demo-note {
+                margin: 0 20px 30px;
+            }
+
+            .map-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .scenario-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <div class="logo">
+            <div class="logo-icon">
+                🌊
+            </div>
+
+            CoastalResilience
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/map">Risk Map</a>
+            <a href="/alerts">Alerts</a>
+            <a href="/authority">Resources</a>
+        </div>
+
+        <div class="status">
+            <div class="status-dot"></div>
+            Prototype Active
+        </div>
+
+    </nav>
+
+
+    <!-- PAGE HEADER -->
+
+    <section class="page-header">
+
+        <h1>Coastal Risk Map</h1>
+
+        <p>
+            AI-powered coastal disaster risk visualization
+        </p>
+
+    </section>
+
+
+    <!-- AI SCENARIO PANEL -->
+
+    {% if session.get("scenario") %}
+
+    <section class="scenario-panel">
+
+        <h2>Current AI Disaster Scenario</h2>
+
+        <div class="scenario-grid">
+
+            <div class="scenario-card">
+                <span>Disaster Type</span>
+
+                <strong>
+                    {{ session["scenario"]["disaster_type"] }}
+                </strong>
+            </div>
+
+
+            <div class="scenario-card">
+                <span>Predicted Risk</span>
+
+                <strong id="scenarioRisk">
+                    {{ session["scenario"]["predicted_risk"] }}
+                </strong>
+            </div>
+
+
+            <div class="scenario-card">
+                <span>Risk Score</span>
+
+                <strong>
+                    {{ session["scenario"]["risk_score"] }}/100
+                </strong>
+            </div>
+
+
+            <div class="scenario-card">
+                <span>Rainfall</span>
+
+                <strong>
+                    {{ session["scenario"]["rainfall"] }} mm
+                </strong>
+            </div>
+
+
+            <div class="scenario-card">
+                <span>Wind Speed</span>
+
+                <strong>
+                    {{ session["scenario"]["wind_speed"] }} km/h
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- MAP -->
+
+    <section class="map-wrapper">
+
+        <div id="map"></div>
+
+        <div class="map-info">
+
+            <div class="legend">
+
+                <div class="legend-item">
+                    <div class="legend-box high"></div>
+                    High Risk
+                </div>
+
+                <div class="legend-item">
+                    <div class="legend-box medium"></div>
+                    Medium Risk
+                </div>
+
+                <div class="legend-item">
+                    <div class="legend-box low"></div>
+                    Low Risk
+                </div>
+
+            </div>
+
+            <a href="/" class="back-btn">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- DEMO NOTE -->
+
+    <div class="demo-note">
+
+        <strong>Prototype Note:</strong>
+
+        Region locations and population values shown on this map
+        are demonstration data. The AI model predicts the overall
+        disaster scenario risk, while the map applies that scenario
+        risk to the prototype coastal regions for visualization.
+
+    </div>
+
+
+    <!-- LEAFLET -->
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js">
+    </script>
+
+
+    <script>
+
+        /* =====================================================
+           CREATE MAP
+        ===================================================== */
+
+        const map = L.map("map").setView(
+            [11.65, 79.75],
+            10
+        );
+
+
+        /* =====================================================
+           OPEN STREET MAP
+        ===================================================== */
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution:
+                    '&copy; OpenStreetMap contributors'
+            }
+        ).addTo(map);
+
+
+        /* =====================================================
+           READ AI SCENARIO FROM FLASK SESSION
+        ===================================================== */
+
+        const scenarioData =
+            {{ session.get("scenario", {}) | tojson }};
+
+
+        /* =====================================================
+           BASE PROTOTYPE REGION DATA
+        ===================================================== */
+
+        const baseRiskData = [
+
+            {
+                name: "Cuddalore Coastal Region",
+
+                lat: 11.7480,
+
+                lng: 79.7714,
+
+                score: 91,
+
+                population: 12480
+            },
+
+            {
+                name: "Parangipettai Coastal Region",
+
+                lat: 11.4916,
+
+                lng: 79.7624,
+
+                score: 84,
+
+                population: 9750
+            },
+
+            {
+                name: "Chidambaram Region",
+
+                lat: 11.3996,
+
+                lng: 79.6910,
+
+                score: 62,
+
+                population: 7400
+            },
+
+            {
+                name: "Northern Coastal Region",
+
+                lat: 11.9000,
+
+                lng: 79.8000,
+
+                score: 48,
+
+                population: 5800
+            }
+
+        ];
+
+
+        /* =====================================================
+           DETERMINE AI SCENARIO RISK
+        ===================================================== */
+
+        let scenarioRisk =
+            scenarioData.predicted_risk || "Medium";
+
+
+        /*
+           The AI model gives scenario-level risk.
+
+           We use this to adjust the prototype
+           region scores for visualization.
+        */
+
+        let scenarioMultiplier = 1;
+
+
+        if (scenarioRisk === "High") {
+
+            scenarioMultiplier = 1.10;
+
+        }
+
+        else if (scenarioRisk === "Medium") {
+
+            scenarioMultiplier = 0.90;
+
+        }
+
+        else if (scenarioRisk === "Low") {
+
+            scenarioMultiplier = 0.70;
+
+        }
+
+
+        /* =====================================================
+           GENERATE DYNAMIC REGION RISK
+        ===================================================== */
+
+        const riskData =
+            baseRiskData.map(function (location) {
+
+                let adjustedScore =
+                    Math.round(
+                        location.score *
+                        scenarioMultiplier
+                    );
+
+
+                /*
+                   Keep score between 0 and 100
+                */
+
+                adjustedScore =
+                    Math.min(
+                        Math.max(adjustedScore, 0),
+                        100
+                    );
+
+
+                let riskLevel;
+
+
+                if (adjustedScore >= 75) {
+
+                    riskLevel = "High";
+
+                }
+
+                else if (adjustedScore >= 50) {
+
+                    riskLevel = "Medium";
+
+                }
+
+                else {
+
+                    riskLevel = "Low";
+
+                }
+
+
+                return {
+
+                    ...location,
+
+                    score: adjustedScore,
+
+                    risk: riskLevel
+
+                };
+
+            });
+
+
+        /* =====================================================
+           RISK COLOR FUNCTION
+        ===================================================== */
+
+        function getRiskColor(risk) {
+
+            if (risk === "High") {
+
+                return "#EF4444";
+
+            }
+
+            if (risk === "Medium") {
+
+                return "#EAB308";
+
+            }
+
+            return "#10B981";
+
+        }
+
+
+        /* =====================================================
+           CREATE MAP MARKERS
+        ===================================================== */
+
+        riskData.forEach(function (location) {
+
+            const color =
+                getRiskColor(location.risk);
+
+
+            const marker =
+                L.circleMarker(
+
+                    [
+                        location.lat,
+                        location.lng
+                    ],
+
+                    {
+
+                        radius: 11,
+
+                        fillColor: color,
+
+                        color: "#ffffff",
+
+                        weight: 2,
+
+                        opacity: 1,
+
+                        fillOpacity: 0.85
+
+                    }
+
+                );
+
+
+            marker.bindPopup(`
+
+                <div style="min-width:210px">
+
+                    <h3 style="
+                        margin-bottom:8px;
+                        color:#111827;
+                    ">
+                        ${location.name}
+                    </h3>
+
+                    <p style="
+                        margin:5px 0;
+                        color:#374151;
+                    ">
+                        <strong>Risk Score:</strong>
+                        ${location.score}/100
+                    </p>
+
+                    <p style="
+                        margin:5px 0;
+                        color:#374151;
+                    ">
+                        <strong>Risk Level:</strong>
+
+                        <span style="
+                            color:${color};
+                            font-weight:bold;
+                        ">
+                            ${location.risk}
+                        </span>
+                    </p>
+
+                    <p style="
+                        margin:5px 0;
+                        color:#374151;
+                    ">
+                        <strong>Population:</strong>
+                        ${location.population.toLocaleString()}
+                    </p>
+
+                </div>
+
+            `);
+
+
+            marker.addTo(map);
+
+        });
+
+
+        /* =====================================================
+           GENERATE PROTOTYPE HEATMAP
+        ===================================================== */
+
+        const riskDataHeatmap = [
+
+            [
+                11.7480,
+                79.7714,
+                0.90
+            ],
+
+            [
+                11.4916,
+                79.7624,
+                0.82
+            ],
+
+            [
+                11.3996,
+                79.6910,
+                0.62
+            ],
+
+            [
+                11.9000,
+                79.8000,
+                0.48
+            ],
+
+            [
+                11.7000,
+                79.8500,
+                0.70
+            ],
+
+            [
+                11.5500,
+                79.8200,
+                0.65
+            ],
+
+            [
+                11.4500,
+                79.7300,
+                0.55
+            ]
+
+        ];
+
+
+        /* =====================================================
+           AI RISK HEATMAP MULTIPLIER
+        ===================================================== */
+
+        let heatIntensityMultiplier = 0.70;
+
+
+        if (scenarioRisk === "High") {
+
+            heatIntensityMultiplier = 1.00;
+
+        }
+
+        else if (scenarioRisk === "Medium") {
+
+            heatIntensityMultiplier = 0.70;
+
+        }
+
+        else if (scenarioRisk === "Low") {
+
+            heatIntensityMultiplier = 0.40;
+
+        }
+
+
+        /* =====================================================
+           ADJUST HEATMAP USING AI RISK
+        ===================================================== */
+
+        const adjustedRiskData =
+            riskDataHeatmap.map(function (point) {
+
+                return [
+
+                    point[0],
+
+                    point[1],
+
+                    Math.min(
+                        point[2] *
+                        heatIntensityMultiplier,
+                        1
+                    )
+
+                ];
+
+            });
+
+
+        /* =====================================================
+           ADD HEATMAP
+        ===================================================== */
+
+        L.heatLayer(
+
+            adjustedRiskData,
+
+            {
+
+                radius: 35,
+
+                blur: 25,
+
+                maxZoom: 12,
+
+                max: 1.0
+
+            }
+
+        ).addTo(map);
+
+
+        /* =====================================================
+           ADD SCENARIO INFORMATION TO MAP
+        ===================================================== */
+
+        if (scenarioData.predicted_risk) {
+
+            const scenarioBox =
+                L.control({
+                    position: "topright"
+                });
+
+
+            scenarioBox.onAdd = function () {
+
+                const div =
+                    L.DomUtil.create(
+                        "div",
+                        "scenario-map-control"
+                    );
+
+
+                let riskColor =
+                    getRiskColor(
+                        scenarioData.predicted_risk
+                    );
+
+
+                div.innerHTML = `
+
+                    <div style="
+                        background:#182232;
+                        color:white;
+                        padding:14px 16px;
+                        border-radius:10px;
+                        border:1px solid #263244;
+                        box-shadow:0 4px 12px rgba(0,0,0,.3);
+                        min-width:190px;
+                    ">
+
+                        <div style="
+                            font-size:11px;
+                            color:#9ca3af;
+                            margin-bottom:5px;
+                        ">
+                            AI SCENARIO RISK
+                        </div>
+
+                        <div style="
+                            font-size:20px;
+                            font-weight:bold;
+                            color:${riskColor};
+                        ">
+                            ${scenarioData.predicted_risk}
+                        </div>
+
+                        <div style="
+                            font-size:13px;
+                            color:#d1d5db;
+                            margin-top:5px;
+                        ">
+                            Score:
+                            ${scenarioData.risk_score}/100
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                return div;
+
+            };
+
+
+            scenarioBox.addTo(map);
+
+        }
+
+
+        /* =====================================================
+           FIT MAP TO COASTAL REGION
+        ===================================================== */
+
+        const mapBounds =
+            L.latLngBounds(
+
+                riskData.map(function (location) {
+
+                    return [
+                        location.lat,
+                        location.lng
+                    ];
+
+                })
+
+            );
+
+
+        map.fitBounds(
+            mapBounds,
+            {
+                padding: [40, 40]
+            }
+        );
+
+
+    </script>
+
+</body>
+
+</html>

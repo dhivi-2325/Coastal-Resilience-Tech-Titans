@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Authority Command Center</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            background: #1f2937;
+            padding: 20px 35px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            border-bottom: 1px solid #374151;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #10b981;
+            font-size: 26px;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            background: #059669;
+            color: white;
+            text-decoration: none;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #047857;
+        }
+
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        .container {
+            padding: 30px 35px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status {
+            background: #064e3b;
+
+            border: 1px solid #059669;
+
+            padding: 15px 20px;
+
+            border-radius: 10px;
+
+            margin-bottom: 25px;
+
+            color: #d1fae5;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           STAT CARDS
+        ========================= */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 20px;
+
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #1f2937;
+
+            padding: 22px;
+
+            border-radius: 14px;
+
+            border: 1px solid #374151;
+
+            box-shadow:
+                0 5px 15px
+                rgba(0,0,0,0.2);
+        }
+
+        .stat-card h3 {
+            margin: 0;
+
+            color: #9ca3af;
+
+            font-size: 14px;
+
+            font-weight: normal;
+        }
+
+        .stat-number {
+            margin-top: 12px;
+
+            font-size: 32px;
+
+            font-weight: bold;
+        }
+
+        .high {
+            color: #ef4444;
+        }
+
+        .warning {
+            color: #eab308;
+        }
+
+        .safe {
+            color: #10b981;
+        }
+
+        .orange {
+            color: #f97316;
+        }
+
+
+        /* =========================
+           GRID
+        ========================= */
+
+        .grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 25px;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* =========================
+           PANEL
+        ========================= */
+
+        .panel {
+            background: #1f2937;
+
+            border: 1px solid #374151;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 5px 15px
+                rgba(0,0,0,0.2);
+        }
+
+        .panel h2 {
+            margin-top: 0;
+
+            color: #10b981;
+
+            font-size: 20px;
+        }
+
+        .panel-description {
+            color: #9ca3af;
+
+            font-size: 13px;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================
+           SCENARIO DETAILS
+        ========================= */
+
+        .scenario-details {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px;
+        }
+
+        .detail {
+            background: #111827;
+
+            padding: 14px;
+
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            color: #9ca3af;
+
+            font-size: 12px;
+
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           RISK BAR
+        ========================= */
+
+        .risk-container {
+            margin-top: 20px;
+        }
+
+        .risk-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+        }
+
+        .risk-bar {
+            height: 14px;
+
+            background: #374151;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        .risk-fill {
+            height: 100%;
+
+            width: 0%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #10b981,
+                    #eab308,
+                    #f97316,
+                    #ef4444
+                );
+
+            border-radius: 10px;
+
+            transition: width 0.5s;
+        }
+
+
+        /* =========================
+           RESOURCE TABLE
+        ========================= */
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 15px;
+        }
+
+        th {
+            text-align: left;
+
+            color: #9ca3af;
+
+            font-size: 12px;
+
+            padding: 12px;
+
+            border-bottom:
+                1px solid #374151;
+        }
+
+        td {
+            padding: 13px 12px;
+
+            border-bottom:
+                1px solid #374151;
+
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: bold;
+        }
+
+        .badge-high {
+            background: #7f1d1d;
+
+            color: #fecaca;
+        }
+
+        .badge-medium {
+            background: #713f12;
+
+            color: #fef08a;
+        }
+
+        .badge-low {
+            background: #064e3b;
+
+            color: #a7f3d0;
+        }
+
+
+        /* =========================
+           RESOURCE CARDS
+        ========================= */
+
+        .resources {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 12px;
+
+            margin-top: 20px;
+        }
+
+        .resource {
+            background: #111827;
+
+            padding: 16px;
+
+            border-radius: 10px;
+
+            text-align: center;
+        }
+
+        .resource-number {
+            font-size: 25px;
+
+            font-weight: bold;
+
+            color: #f97316;
+        }
+
+        .resource-name {
+            margin-top: 5px;
+
+            color: #9ca3af;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           GIS BUTTON
+        ========================= */
+
+        .map-btn {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            padding: 12px 20px;
+
+            background: #059669;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .map-btn:hover {
+            background: #047857;
+        }
+
+
+        /* =========================
+           RESPONSE STATUS
+        ========================= */
+
+        .response-list {
+            list-style: none;
+
+            padding: 0;
+
+            margin: 0;
+        }
+
+        .response-list li {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 14px 0;
+
+            border-bottom:
+                1px solid #374151;
+
+            font-size: 14px;
+        }
+
+        .ready {
+            color: #10b981;
+
+            font-weight: bold;
+        }
+
+        .attention {
+            color: #f97316;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           NO SCENARIO MESSAGE
+        ========================= */
+
+        .no-scenario {
+            color: #9ca3af;
+
+            font-size: 13px;
+
+            padding: 15px;
+
+            background: #111827;
+
+            border-radius: 8px;
+
+            border: 1px solid #374151;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1000px) {
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resources {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .header {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .scenario-details {
+                grid-template-columns: 1fr;
+            }
+
+            .resources {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header class="header">
+
+        <div>
+
+            <h1>
+                Authority Command Center
+            </h1>
+
+            <p>
+                Coastal Resilience & Disaster Management System
+            </p>
+
+        </div>
+
+        <a
+            href="/"
+            class="back-btn"
+        >
+            ← Home
+        </a>
+
+    </header>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="container">
+
+
+        <!-- STATUS -->
+
+        <div class="status">
+
+            ● SYSTEM ACTIVE —
+            AI risk monitoring and disaster
+            decision-support prototype is operational.
+
+        </div>
+
+
+
+        <!-- =========================
+             STAT CARDS
+        ========================= -->
+
+        <section class="stats">
+
+
+            <div class="stat-card">
+
+                <h3>
+                    HIGH-RISK VILLAGES
+                </h3>
+
+                <div
+                    id="highRiskVillages"
+                    class="stat-number high"
+                >
+                    03
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>
+                    EXPOSED POPULATION
+                </h3>
+
+                <div
+                    id="exposedPopulation"
+                    class="stat-number orange"
+                >
+                    12,480
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>
+                    SHELTER CAPACITY
+                </h3>
+
+                <div
+                    class="stat-number safe"
+                >
+                    8,250
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>
+                    RESPONSE READINESS
+                </h3>
+
+                <div
+                    class="stat-number warning"
+                >
+                    72%
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             TOP PANELS
+        ========================= -->
+
+        <section class="grid">
+
+
+            <!-- AI SCENARIO -->
+
+            <div class="panel">
+
+                <h2>
+                    Latest AI Risk Assessment
+                </h2>
+
+                <p class="panel-description">
+
+                    Latest scenario submitted through
+                    the disaster simulation module.
+
+                </p>
+
+
+                <div class="scenario-details">
+
+
+                    <div class="detail">
+
+                        <div class="detail-label">
+                            Disaster Type
+                        </div>
+
+                        <div
+                            id="disasterType"
+                            class="detail-value"
+                        >
+                            No scenario
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <div class="detail-label">
+                            AI Risk Level
+                        </div>
+
+                        <div
+                            id="riskLevel"
+                            class="detail-value"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <div class="detail-label">
+                            Rainfall
+                        </div>
+
+                        <div
+                            id="rainfall"
+                            class="detail-value"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <div class="detail-label">
+                            Wind Speed
+                        </div>
+
+                        <div
+                            id="windSpeed"
+                            class="detail-value"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <div class="detail-label">
+                            Tide Level
+                        </div>
+
+                        <div
+                            id="tideLevel"
+                            class="detail-value"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <div class="detail-label">
+                            Population
+                        </div>
+
+                        <div
+                            id="population"
+                            class="detail-value"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <div class="detail-label">
+                            Elevation
+                        </div>
+
+                        <div
+                            id="elevation"
+                            class="detail-value"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- RISK BAR -->
+
+                <div class="risk-container">
+
+                    <div class="risk-header">
+
+                        <span>
+                            AI Risk Score
+                        </span>
+
+                        <strong id="riskScore">
+                            0/100
+                        </strong>
+
+                    </div>
+
+                    <div class="risk-bar">
+
+                        <div
+                            id="riskFill"
+                            class="risk-fill"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RESPONSE READINESS -->
+
+            <div class="panel">
+
+                <h2>
+                    Response Readiness
+                </h2>
+
+                <p class="panel-description">
+
+                    Current preparedness indicators
+                    for emergency response.
+
+                </p>
+
+
+                <ul class="response-list">
+
+
+                    <li>
+
+                        <span>
+                            Emergency Teams
+                        </span>
+
+                        <span class="ready">
+                            READY
+                        </span>
+
+                    </li>
+
+
+                    <li>
+
+                        <span>
+                            Rescue Vehicles
+                        </span>
+
+                        <span class="ready">
+                            READY
+                        </span>
+
+                    </li>
+
+
+                    <li>
+
+                        <span>
+                            Medical Support
+                        </span>
+
+                        <span class="ready">
+                            READY
+                        </span>
+
+                    </li>
+
+
+                    <li>
+
+                        <span>
+                            Shelter Coordination
+                        </span>
+
+                        <span class="attention">
+                            REVIEW
+                        </span>
+
+                    </li>
+
+
+                    <li>
+
+                        <span>
+                            Public Alert System
+                        </span>
+
+                        <span class="ready">
+                            READY
+                        </span>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             VILLAGE RISK TABLE
+        ========================= -->
+
+        <section class="panel">
+
+            <h2>
+                Village Risk Prioritization
+            </h2>
+
+            <p class="panel-description">
+
+                Villages are prioritized according to
+                AI risk assessment and population exposure.
+
+            </p>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Location
+                        </th>
+
+                        <th>
+                            Hazard
+                        </th>
+
+                        <th>
+                            Risk Score
+                        </th>
+
+                        <th>
+                            Population
+                        </th>
+
+                        <th>
+                            Priority
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    <tr>
+
+                        <td>
+                            Cuddalore Coastal Region
+                        </td>
+
+                        <td>
+                            Coastal Flood /
+                            Storm Surge
+                        </td>
+
+                        <td>
+                            <strong class="high">
+                                91/100
+                            </strong>
+                        </td>
+
+                        <td>
+                            12,480
+                        </td>
+
+                        <td>
+
+                            <span class="badge badge-high">
+                                HIGH
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Parangipettai Coastal Region
+                        </td>
+
+                        <td>
+                            Storm Surge
+                        </td>
+
+                        <td>
+                            <strong class="high">
+                                84/100
+                            </strong>
+                        </td>
+
+                        <td>
+                            9,750
+                        </td>
+
+                        <td>
+
+                            <span class="badge badge-high">
+                                HIGH
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Chidambaram Region
+                        </td>
+
+                        <td>
+                            Coastal Flood
+                        </td>
+
+                        <td>
+                            <strong class="warning">
+                                62/100
+                            </strong>
+                        </td>
+
+                        <td>
+                            7,400
+                        </td>
+
+                        <td>
+
+                            <span class="badge badge-medium">
+                                MEDIUM
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Northern Coastal Region
+                        </td>
+
+                        <td>
+                            Heavy Rainfall
+                        </td>
+
+                        <td>
+                            <strong class="warning">
+                                48/100
+                            </strong>
+                        </td>
+
+                        <td>
+                            5,800
+                        </td>
+
+                        <td>
+
+                            <span class="badge badge-medium">
+                                MEDIUM
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                </tbody>
+
+            </table>
+
+
+            <a
+                href="/map"
+                class="map-btn"
+            >
+                Open GIS Risk Map →
+            </a>
+
+        </section>
+
+
+
+        <!-- =========================
+             RESOURCE PLANNING
+        ========================= -->
+
+        <section class="panel">
+
+            <h2>
+                Emergency Resource Planning
+            </h2>
+
+            <p class="panel-description">
+
+                Prototype resource demand estimation
+                based on the latest exposed population.
+
+            </p>
+
+
+            <div class="resources">
+
+
+                <div class="resource">
+
+                    <div
+                        id="shelterDemand"
+                        class="resource-number"
+                    >
+                        2,400
+                    </div>
+
+                    <div class="resource-name">
+                        Shelter Capacity Needed
+                    </div>
+
+                </div>
+
+
+                <div class="resource">
+
+                    <div
+                        id="foodDemand"
+                        class="resource-number"
+                    >
+                        7,200
+                    </div>
+
+                    <div class="resource-name">
+                        Food Packs
+                    </div>
+
+                </div>
+
+
+                <div class="resource">
+
+                    <div
+                        id="waterDemand"
+                        class="resource-number"
+                    >
+                        14,400
+                    </div>
+
+                    <div class="resource-name">
+                        Water Units
+                    </div>
+
+                </div>
+
+
+                <div class="resource">
+
+                    <div
+                        id="medicalDemand"
+                        class="resource-number"
+                    >
+                        480
+                    </div>
+
+                    <div class="resource-name">
+                        Medical Kits
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        /*
+         * Flask session data
+         *
+         * This receives the scenario generated
+         * from the /scenario page.
+         */
+
+        const scenarioData =
+            {{ session.get("scenario", {}) | tojson }};
+
+
+
+        /*
+         * Check if a scenario exists.
+         */
+
+        if (
+            scenarioData &&
+            Object.keys(scenarioData).length > 0
+        ) {
+
+
+            /* =========================
+               DISASTER TYPE
+            ========================= */
+
+            let disasterType =
+                scenarioData.disaster_type || "-";
+
+
+            disasterType =
+                disasterType
+                    .replaceAll("_", " ")
+                    .replace(/\b\w/g, function(letter) {
+                        return letter.toUpperCase();
+                    });
+
+
+            document
+                .getElementById("disasterType")
+                .textContent =
+                    disasterType;
+
+
+
+            /* =========================
+               RISK LEVEL
+            ========================= */
+
+            const riskLevel =
+                scenarioData.predicted_risk || "-";
+
+
+            const riskElement =
+                document.getElementById("riskLevel");
+
+
+            riskElement.textContent =
+                riskLevel;
+
+
+            /*
+             * Change risk text colour.
+             */
+
+            riskElement.classList.remove(
+                "high",
+                "warning",
+                "safe"
+            );
+
+
+            if (riskLevel === "High") {
+
+                riskElement.classList.add("high");
+
+            }
+
+            else if (riskLevel === "Medium") {
+
+                riskElement.classList.add("warning");
+
+            }
+
+            else if (riskLevel === "Low") {
+
+                riskElement.classList.add("safe");
+
+            }
+
+
+
+            /* =========================
+               RAINFALL
+            ========================= */
+
+            document
+                .getElementById("rainfall")
+                .textContent =
+                    scenarioData.rainfall + " mm";
+
+
+
+            /* =========================
+               WIND SPEED
+            ========================= */
+
+            document
+                .getElementById("windSpeed")
+                .textContent =
+                    scenarioData.wind_speed + " km/h";
+
+
+
+            /* =========================
+               TIDE LEVEL
+            ========================= */
+
+            document
+                .getElementById("tideLevel")
+                .textContent =
+                    scenarioData.tide_level + " m";
+
+
+
+            /* =========================
+               ELEVATION
+            ========================= */
+
+            document
+                .getElementById("elevation")
+                .textContent =
+                    scenarioData.elevation + " m";
+
+
+
+            /* =========================
+               POPULATION
+            ========================= */
+
+            const population =
+                Number(
+                    scenarioData.population || 0
+                );
+
+
+            document
+                .getElementById("population")
+                .textContent =
+                    population.toLocaleString();
+
+
+
+            /* =========================
+               RISK SCORE
+            ========================= */
+
+            const score =
+                Number(
+                    scenarioData.risk_score || 0
+                );
+
+
+            document
+                .getElementById("riskScore")
+                .textContent =
+                    score + "/100";
+
+
+            document
+                .getElementById("riskFill")
+                .style.width =
+                    Math.min(
+                        Math.max(score, 0),
+                        100
+                    ) + "%";
+
+
+
+            /* =========================
+               EXPOSED POPULATION CARD
+            ========================= */
+
+            document
+                .getElementById("exposedPopulation")
+                .textContent =
+                    population.toLocaleString();
+
+
+
+            /* =========================
+               RESOURCE PLANNING
+            ========================= */
+
+            /*
+             * Prototype resource estimation.
+             *
+             * These values are calculated from
+             * the exposed population.
+             */
+
+
+            const shelterDemand =
+                Math.round(
+                    population * 0.20
+                );
+
+
+            const foodDemand =
+                Math.round(
+                    population * 0.60
+                );
+
+
+            const waterDemand =
+                Math.round(
+                    population * 1.20
+                );
+
+
+            const medicalDemand =
+                Math.round(
+                    population * 0.04
+                );
+
+
+
+            document
+                .getElementById("shelterDemand")
+                .textContent =
+                    shelterDemand.toLocaleString();
+
+
+            document
+                .getElementById("foodDemand")
+                .textContent =
+                    foodDemand.toLocaleString();
+
+
+            document
+                .getElementById("waterDemand")
+                .textContent =
+                    waterDemand.toLocaleString();
+
+
+            document
+                .getElementById("medicalDemand")
+                .textContent =
+                    medicalDemand.toLocaleString();
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

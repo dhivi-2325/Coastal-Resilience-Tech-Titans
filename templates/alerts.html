@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CoastalResilience | Emergency Alerts</title>
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .alerts-page {
+            padding: 45px 50px;
+        }
+
+        .alerts-header {
+            margin-bottom: 30px;
+        }
+
+        .alerts-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .alerts-header p {
+            color: #9ca3af;
+            font-size: 15px;
+        }
+
+        .alerts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .alert-card {
+            background: #182232;
+            border: 1px solid #263244;
+            border-radius: 15px;
+            padding: 28px;
+        }
+
+        .alert-card h2 {
+            font-size: 20px;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #d1d5db;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background: #111827;
+            color: white;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #10b981;
+        }
+
+        .channel-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .channel-option {
+            position: relative;
+        }
+
+        .channel-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .channel-option label {
+            display: block;
+            text-align: center;
+            padding: 11px 8px;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            background: #111827;
+            color: #d1d5db;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .channel-option input:checked + label {
+            border-color: #10b981;
+            background: #064e3b;
+            color: #34d399;
+        }
+
+        .alert-submit {
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            padding: 14px 20px;
+            border-radius: 8px;
+            background: #f97316;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .alert-submit:hover {
+            background: #ea580c;
+        }
+
+        .scenario-box {
+            background: #111827;
+            border: 1px solid #263244;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .scenario-box h3 {
+            margin-bottom: 18px;
+            font-size: 17px;
+        }
+
+        .scenario-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 10px 0;
+            border-bottom: 1px solid #263244;
+            font-size: 13px;
+        }
+
+        .scenario-row:last-child {
+            border-bottom: none;
+        }
+
+        .scenario-row span:first-child {
+            color: #9ca3af;
+        }
+
+        .scenario-row span:last-child {
+            color: white;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .risk-high {
+            color: #ef4444 !important;
+        }
+
+        .risk-medium {
+            color: #eab308 !important;
+        }
+
+        .risk-low {
+            color: #10b981 !important;
+        }
+
+        .generated-alert {
+            background: #111827;
+            border: 1px solid #263244;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .generated-alert h3 {
+            margin-bottom: 15px;
+            font-size: 17px;
+        }
+
+        .alert-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .meta-item {
+            background: #182232;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .meta-item small {
+            display: block;
+            color: #9ca3af;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .meta-item strong {
+            font-size: 13px;
+        }
+
+        .alert-message {
+            border-left: 4px solid #f97316;
+            background: #182232;
+            border-radius: 6px;
+            padding: 17px;
+            color: #e5e7eb;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            background: #3f1d1d;
+            border: 1px solid #7f1d1d;
+            color: #fecaca;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .no-alert {
+            color: #9ca3af;
+            line-height: 1.7;
+            font-size: 14px;
+            background: #111827;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .prototype-warning {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 4px solid #f97316;
+            background: #111827;
+            color: #9ca3af;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .navigation-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .navigation-buttons a {
+            text-decoration: none;
+        }
+
+        @media (max-width: 900px) {
+
+            .alerts-page {
+                padding: 30px 20px;
+            }
+
+            .alerts-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .channel-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .alert-meta {
+                grid-template-columns: 1fr;
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🌊
+            </div>
+
+            CoastalResilience
+
+        </div>
+
+
+        <div class="nav-links">
+
+            <a href="/">Home</a>
+
+            <a href="/map">Risk Map</a>
+
+            <a href="/alerts">Alerts</a>
+
+            <a href="/authority">Resources</a>
+
+        </div>
+
+
+        <div class="status">
+
+            <div class="status-dot"></div>
+
+            Prototype Active
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="alerts-page">
+
+
+        <!-- HEADER -->
+
+        <div class="alerts-header">
+
+            <h1>Emergency Alert Simulation</h1>
+
+            <p>
+                Generate targeted disaster warning messages
+                using the latest AI risk prediction.
+            </p>
+
+        </div>
+
+
+
+        <!-- ERROR -->
+
+        {% if alert_error %}
+
+        <div class="alert-error">
+
+            ⚠️ {{ alert_error }}
+
+        </div>
+
+        {% endif %}
+
+
+
+        <div class="alerts-grid">
+
+
+            <!-- LEFT SIDE -->
+
+            <section class="alert-card">
+
+                <h2>Generate Alert</h2>
+
+
+                <form method="POST"
+                    action="{{ url_for('alerts') }}">
+
+
+                    <!-- VILLAGE -->
+
+                    <div class="form-group">
+
+                        <label for="village">
+                            Target Village / Area
+                        </label>
+
+                        <input
+                            type="text"
+                            id="village"
+                            name="village"
+                            placeholder="Enter village or coastal area"
+                            value="{% if alert_result %}{{ alert_result.village }}{% else %}Demo Coastal Village{% endif %}"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- CHANNEL -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Alert Channel
+                        </label>
+
+
+                        <div class="channel-options">
+
+
+                            <div class="channel-option">
+
+                                <input
+                                    type="radio"
+                                    id="sms"
+                                    name="channel"
+                                    value="SMS"
+                                    {% if not alert_result or alert_result.channel == "SMS" %}
+                                    checked
+                                    {% endif %}>
+
+                                <label for="sms">
+                                    📱 SMS
+                                </label>
+
+                            </div>
+
+
+                            <div class="channel-option">
+
+                                <input
+                                    type="radio"
+                                    id="voice"
+                                    name="channel"
+                                    value="Voice"
+                                    {% if alert_result and alert_result.channel == "Voice" %}
+                                    checked
+                                    {% endif %}>
+
+                                <label for="voice">
+                                    📞 Voice
+                                </label>
+
+                            </div>
+
+
+                            <div class="channel-option">
+
+                                <input
+                                    type="radio"
+                                    id="whatsapp"
+                                    name="channel"
+                                    value="WhatsApp"
+                                    {% if alert_result and alert_result.channel == "WhatsApp" %}
+                                    checked
+                                    {% endif %}>
+
+                                <label for="whatsapp">
+                                    💬 WhatsApp
+                                </label>
+
+                            </div>
+
+
+                            <div class="channel-option">
+
+                                <input
+                                    type="radio"
+                                    id="telegram"
+                                    name="channel"
+                                    value="Telegram"
+                                    {% if alert_result and alert_result.channel == "Telegram" %}
+                                    checked
+                                    {% endif %}>
+
+                                <label for="telegram">
+                                    ✈️ Telegram
+                                </label>
+
+                            </div>
+
+
+                            <div class="channel-option">
+
+                                <input
+                                    type="radio"
+                                    id="web"
+                                    name="channel"
+                                    value="Web"
+                                    {% if alert_result and alert_result.channel == "Web" %}
+                                    checked
+                                    {% endif %}>
+
+                                <label for="web">
+                                    🌐 Web
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- LANGUAGE -->
+
+                    <div class="form-group">
+
+                        <label for="language">
+                            Alert Language
+                        </label>
+
+                        <select
+                            id="language"
+                            name="language">
+
+                            <option value="English"
+                                {% if alert_result and alert_result.language == "English" %}
+                                selected
+                                {% endif %}>
+                                English
+                            </option>
+
+                            <option value="Tamil"
+                                {% if alert_result and alert_result.language == "Tamil" %}
+                                selected
+                                {% endif %}>
+                                தமிழ் (Tamil)
+                            </option>
+
+                            <option value="Hindi"
+                                {% if alert_result and alert_result.language == "Hindi" %}
+                                selected
+                                {% endif %}>
+                                हिन्दी (Hindi)
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        type="submit"
+                        class="alert-submit">
+
+                        🚨 Simulate Alert
+
+                    </button>
+
+
+                </form>
+
+            </section>
+
+
+
+            <!-- RIGHT SIDE -->
+
+            <section class="alert-card">
+
+                <h2>Current AI Scenario</h2>
+
+
+                {% if scenario %}
+
+                <div class="scenario-box">
+
+                    <h3>
+                        AI Risk Assessment
+                    </h3>
+
+
+                    <!-- DISASTER -->
+
+                    <div class="scenario-row">
+
+                        <span>
+                            Disaster Type
+                        </span>
+
+                        <span>
+                            {{ scenario.disaster_type }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- RISK -->
+
+                    <div class="scenario-row">
+
+                        <span>
+                            Predicted Risk
+                        </span>
+
+                        <span
+                            id="riskDisplay"
+                            class="
+                            {% if scenario.predicted_risk == 'High' %}
+                                risk-high
+                            {% elif scenario.predicted_risk == 'Medium' %}
+                                risk-medium
+                            {% else %}
+                                risk-low
+                            {% endif %}
+                            ">
+
+                            {{ scenario.predicted_risk }}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- SCORE -->
+
+                    <div class="scenario-row">
+
+                        <span>
+                            Risk Score
+                        </span>
+
+                        <span>
+                            {{ scenario.risk_score }}/100
+                        </span>
+
+                    </div>
+
+
+                    <!-- RAIN -->
+
+                    <div class="scenario-row">
+
+                        <span>
+                            Rainfall
+                        </span>
+
+                        <span>
+                            {{ scenario.rainfall }} mm
+                        </span>
+
+                    </div>
+
+
+                    <!-- WIND -->
+
+                    <div class="scenario-row">
+
+                        <span>
+                            Wind Speed
+                        </span>
+
+                        <span>
+                            {{ scenario.wind_speed }} km/h
+                        </span>
+
+                    </div>
+
+
+                    <!-- TIDE -->
+
+                    <div class="scenario-row">
+
+                        <span>
+                            Tide Level
+                        </span>
+
+                        <span>
+                            {{ scenario.tide_level }} m
+                        </span>
+
+                    </div>
+
+
+                    <!-- ELEVATION -->
+
+                    <div class="scenario-row">
+
+                        <span>
+                            Elevation
+                        </span>
+
+                        <span>
+                            {{ scenario.elevation }} m
+                        </span>
+
+                    </div>
+
+
+                    <!-- POPULATION -->
+
+                    <div class="scenario-row">
+
+                        <span>
+                            Population
+                        </span>
+
+                        <span>
+                            {{ scenario.population | int }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {% else %}
+
+                <div class="no-alert">
+
+                    <strong>No active disaster scenario.</strong>
+
+                    <br><br>
+
+                    Please run a disaster scenario first.
+                    The AI prediction will then be used
+                    to generate the emergency alert.
+
+                </div>
+
+                {% endif %}
+
+
+
+                <!-- GENERATED ALERT -->
+
+                {% if alert_result %}
+
+                <div class="generated-alert">
+
+                    <h3>
+                        Generated Emergency Alert
+                    </h3>
+
+
+                    <div class="alert-meta">
+
+
+                        <div class="meta-item">
+
+                            <small>
+                                CHANNEL
+                            </small>
+
+                            <strong>
+                                {{ alert_result.channel }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="meta-item">
+
+                            <small>
+                                AREA
+                            </small>
+
+                            <strong>
+                                {{ alert_result.village }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="meta-item">
+
+                            <small>
+                                LANGUAGE
+                            </small>
+
+                            <strong>
+                                {{ alert_result.language }}
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="alert-message">
+
+                        {{ alert_result.message }}
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+
+
+                <!-- PROTOTYPE WARNING -->
+
+                <div class="prototype-warning">
+
+                    <strong>Prototype Mode:</strong>
+
+                    This feature simulates emergency alert
+                    generation. No real SMS, voice call,
+                    WhatsApp, Telegram message, or other
+                    notification is actually sent.
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+
+        <!-- NAVIGATION -->
+
+        <div class="navigation-buttons">
+
+            <a
+                href="/scenario"
+                class="secondary-btn">
+
+                ← Run Another Scenario
+
+            </a>
+
+
+            <a
+                href="/map"
+                class="secondary-btn">
+
+                🗺️ View Risk Map
+
+            </a>
+
+
+            <a
+                href="/authority"
+                class="secondary-btn">
+
+                🏛️ Authority Dashboard
+
+            </a>
+
+
+            <a
+                href="/"
+                class="primary-btn">
+
+                🏠 Home
+
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- SMALL CLIENT-SIDE ENHANCEMENT -->
+
+    <script>
+
+        /*
+         * Highlight the current AI risk.
+         * The actual prediction comes from Flask.
+         */
+
+        const riskDisplay =
+            document.getElementById("riskDisplay");
+
+        if (riskDisplay) {
+
+            const risk =
+                riskDisplay.textContent.trim();
+
+
+            if (risk === "High") {
+
+                riskDisplay.title =
+                    "Immediate emergency preparedness recommended.";
+
+            }
+
+            else if (risk === "Medium") {
+
+                riskDisplay.title =
+                    "Stay alert and prepare for possible evacuation.";
+
+            }
+
+            else {
+
+                riskDisplay.title =
+                    "Continue monitoring official updates.";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

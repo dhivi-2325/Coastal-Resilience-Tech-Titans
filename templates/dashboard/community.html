@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Community Dashboard | CoastalResilience</title>
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        body {
+            background: #0F172A;
+        }
+
+        .dashboard {
+            padding: 40px 7%;
+        }
+
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #FFFFFF;
+        }
+
+        .dashboard-header p {
+            color: #94A3B8;
+            font-size: 15px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #182232;
+            border: 1px solid #293548;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .stat-card small {
+            color: #94A3B8;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .stat-card h2 {
+            margin-top: 10px;
+            font-size: 28px;
+            color: #FFFFFF;
+        }
+
+        .stat-card p {
+            margin-top: 6px;
+            color: #64748B;
+            font-size: 12px;
+        }
+
+        .dashboard-main {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: #182232;
+            border: 1px solid #293548;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .dashboard-card h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+        }
+
+        .risk-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px;
+            background: #111827;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+        }
+
+        .risk-status h3 {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .risk-status p {
+            color: #94A3B8;
+            font-size: 12px;
+        }
+
+        .risk-high {
+            border-color: #EF4444;
+        }
+
+        .risk-medium {
+            border-color: #EAB308;
+        }
+
+        .risk-low {
+            border-color: #10B981;
+        }
+
+        .risk-badge {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .badge-high {
+            background: rgba(239, 68, 68, 0.15);
+            color: #F87171;
+        }
+
+        .badge-medium {
+            background: rgba(234, 179, 8, 0.15);
+            color: #FACC15;
+        }
+
+        .badge-low {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34D399;
+        }
+
+        .alert-box {
+            padding: 20px;
+            background: rgba(249, 115, 22, 0.08);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .alert-box h3 {
+            color: #FB923C;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .alert-box p {
+            color: #CBD5E1;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .safety-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .safety-list li {
+            padding: 13px 0;
+            border-bottom: 1px solid #293548;
+            color: #CBD5E1;
+            font-size: 13px;
+        }
+
+        .safety-list li:last-child {
+            border-bottom: none;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #34D399;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .back-link:hover {
+            color: #6EE7B7;
+        }
+
+
+        /* =========================
+           NO SCENARIO MESSAGE
+        ========================= */
+
+        .no-scenario {
+            padding: 18px;
+
+            background: #111827;
+
+            border: 1px solid #293548;
+
+            border-radius: 10px;
+
+            color: #94A3B8;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           RISK SCORE
+        ========================= */
+
+        .risk-score-box {
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background: #111827;
+
+            border-radius: 10px;
+
+            border: 1px solid #293548;
+        }
+
+        .risk-score-label {
+            color: #94A3B8;
+
+            font-size: 11px;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 8px;
+        }
+
+        .risk-score-value {
+            font-size: 26px;
+
+            font-weight: bold;
+
+            color: #FFFFFF;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-main {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .dashboard {
+                padding: 30px 5%;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <span class="logo-icon">◈</span>
+
+            <div>
+
+                <h2>
+                    CoastalResilience
+                </h2>
+
+                <small>
+                    Community Dashboard
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            System Online
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================
+         DASHBOARD
+    ========================= -->
+
+    <main class="dashboard">
+
+
+        <div class="dashboard-header">
+
+            <h1>
+                Community Safety Dashboard
+            </h1>
+
+            <p>
+                Localized disaster intelligence, risk information
+                and safety guidance for coastal communities.
+            </p>
+
+        </div>
+
+
+
+        <!-- =========================
+             FLASK SCENARIO DATA
+        ========================= -->
+
+        {% set scenario = session.get("scenario", {}) %}
+
+
+
+        <!-- =========================
+             STATISTICS
+        ========================= -->
+
+        <div class="dashboard-grid">
+
+
+            <!-- CURRENT HAZARD -->
+
+            <div class="stat-card">
+
+                <small>
+                    CURRENT HAZARD
+                </small>
+
+
+                {% if scenario %}
+
+                    <h2
+                        {% if scenario.predicted_risk == "High" %}
+                            style="color:#EF4444;"
+                        {% elif scenario.predicted_risk == "Medium" %}
+                            style="color:#EAB308;"
+                        {% else %}
+                            style="color:#10B981;"
+                        {% endif %}
+                    >
+
+                        {{ scenario.predicted_risk }}
+
+                    </h2>
+
+                    <p>
+                        AI predicted coastal risk
+                    </p>
+
+                {% else %}
+
+                    <h2>
+                        Moderate
+                    </h2>
+
+                    <p>
+                        Overall coastal risk
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- VILLAGE RISK -->
+
+            <div class="stat-card">
+
+                <small>
+                    RISK SCORE
+                </small>
+
+
+                {% if scenario %}
+
+                    <h2>
+                        {{ scenario.risk_score }} / 100
+                    </h2>
+
+                    <p>
+                        AI-generated scenario score
+                    </p>
+
+                {% else %}
+
+                    <h2>
+                        62 / 100
+                    </h2>
+
+                    <p>
+                        Current risk score
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- WIND SPEED -->
+
+            <div class="stat-card">
+
+                <small>
+                    WIND SPEED
+                </small>
+
+
+                {% if scenario %}
+
+                    <h2>
+                        {{ scenario.wind_speed }} km/h
+                    </h2>
+
+                    <p>
+                        Current scenario value
+                    </p>
+
+                {% else %}
+
+                    <h2>
+                        48 km/h
+                    </h2>
+
+                    <p>
+                        Current scenario value
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- RAINFALL -->
+
+            <div class="stat-card">
+
+                <small>
+                    RAINFALL
+                </small>
+
+
+                {% if scenario %}
+
+                    <h2>
+                        {{ scenario.rainfall }} mm
+                    </h2>
+
+                    <p>
+                        Current scenario value
+                    </p>
+
+                {% else %}
+
+                    <h2>
+                        72 mm
+                    </h2>
+
+                    <p>
+                        Recent rainfall value
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================= -->
+
+        <div class="dashboard-main">
+
+
+            <!-- =========================
+                 RISK INFORMATION
+            ========================= -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    Village Risk Status
+                </h2>
+
+
+                {% if scenario %}
+
+
+                    <!-- HIGH RISK -->
+
+                    {% if scenario.predicted_risk == "High" %}
+
+                    <div class="risk-status risk-high">
+
+                        <div>
+
+                            <h3>
+                                Current Scenario
+                            </h3>
+
+                            <p>
+                                {{ scenario.disaster_type
+                                   | replace('_', ' ')
+                                   | title }}
+
+                                scenario detected with
+                                elevated environmental risk.
+                            </p>
+
+                        </div>
+
+                        <span class="risk-badge badge-high">
+                            HIGH
+                        </span>
+
+                    </div>
+
+
+                    <!-- MEDIUM RISK -->
+
+                    {% elif scenario.predicted_risk == "Medium" %}
+
+                    <div class="risk-status risk-medium">
+
+                        <div>
+
+                            <h3>
+                                Current Scenario
+                            </h3>
+
+                            <p>
+                                {{ scenario.disaster_type
+                                   | replace('_', ' ')
+                                   | title }}
+
+                                scenario detected with
+                                moderate environmental risk.
+                            </p>
+
+                        </div>
+
+                        <span class="risk-badge badge-medium">
+                            MEDIUM
+                        </span>
+
+                    </div>
+
+
+                    <!-- LOW RISK -->
+
+                    {% else %}
+
+                    <div class="risk-status risk-low">
+
+                        <div>
+
+                            <h3>
+                                Current Scenario
+                            </h3>
+
+                            <p>
+                                {{ scenario.disaster_type
+                                   | replace('_', ' ')
+                                   | title }}
+
+                                scenario currently indicates
+                                lower environmental risk.
+                            </p>
+
+                        </div>
+
+                        <span class="risk-badge badge-low">
+                            LOW
+                        </span>
+
+                    </div>
+
+                    {% endif %}
+
+
+
+                    <!-- RISK SCORE -->
+
+                    <div class="risk-score-box">
+
+                        <div class="risk-score-label">
+                            AI RISK SCORE
+                        </div>
+
+                        <div class="risk-score-value">
+
+                            {{ scenario.risk_score }}
+
+                            <span
+                                style="
+                                font-size:14px;
+                                color:#64748B;
+                                "
+                            >
+                                / 100
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SCENARIO INFORMATION -->
+
+                    <div class="risk-score-box">
+
+                        <div class="risk-score-label">
+                            DISASTER TYPE
+                        </div>
+
+                        <div
+                            style="
+                            color:#FFFFFF;
+                            font-size:15px;
+                            font-weight:bold;
+                            "
+                        >
+
+                            {{ scenario.disaster_type
+                               | replace('_', ' ')
+                               | title }}
+
+                        </div>
+
+                    </div>
+
+
+
+                {% else %}
+
+
+                    <!-- NO SCENARIO -->
+
+                    <div class="no-scenario">
+
+                        No disaster scenario has been submitted yet.
+
+                        Run a scenario from the
+                        <strong style="color:#34D399;">
+                            Disaster Scenario Simulator
+                        </strong>
+                        to view the latest AI-based risk assessment
+                        here.
+
+                    </div>
+
+
+                    <!-- DEFAULT DEMO STATUS -->
+
+                    <div
+                        class="risk-status risk-medium"
+                        style="margin-top:15px;"
+                    >
+
+                        <div>
+
+                            <h3>
+                                Coastal Village B
+                            </h3>
+
+                            <p>
+                                Moderate rainfall and coastal exposure
+                            </p>
+
+                        </div>
+
+                        <span class="risk-badge badge-medium">
+                            MEDIUM
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- =========================
+                 ALERTS
+            ========================= -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    Latest Alert
+                </h2>
+
+
+                {% if scenario %}
+
+
+                    {% if scenario.predicted_risk == "High" %}
+
+                    <div class="alert-box">
+
+                        <h3>
+                            ⚠ High Risk Advisory
+                        </h3>
+
+                        <p>
+
+                            A high-risk
+                            {{ scenario.disaster_type
+                               | replace('_', ' ')
+                               | title }}
+
+                            scenario has been detected.
+
+                            Residents in potentially affected
+                            coastal areas should monitor official
+                            warnings and follow local authority
+                            evacuation and safety instructions.
+
+                        </p>
+
+                    </div>
+
+
+                    {% elif scenario.predicted_risk == "Medium" %}
+
+                    <div class="alert-box">
+
+                        <h3>
+                            ⚠ Coastal Risk Advisory
+                        </h3>
+
+                        <p>
+
+                            Moderate coastal hazard conditions
+                            have been identified from the latest
+                            AI scenario assessment.
+
+                            Residents should monitor official
+                            warnings and remain prepared.
+
+                        </p>
+
+                    </div>
+
+
+                    {% else %}
+
+                    <div
+                        class="alert-box"
+                        style="
+                        background:rgba(16,185,129,0.08);
+                        border-color:rgba(16,185,129,0.35);
+                        "
+                    >
+
+                        <h3
+                            style="color:#34D399;"
+                        >
+                            ✓ Low Risk Advisory
+                        </h3>
+
+                        <p>
+
+                            The latest AI scenario currently
+                            indicates a lower coastal risk level.
+
+                            Continue monitoring official
+                            disaster information.
+
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+
+                {% else %}
+
+
+                    <div class="alert-box">
+
+                        <h3>
+                            ⚠ Coastal Risk Advisory
+                        </h3>
+
+                        <p>
+
+                            No new AI scenario has been submitted.
+
+                            Residents should continue to monitor
+                            official disaster warnings and follow
+                            local authority safety instructions.
+
+                        </p>
+
+                    </div>
+
+
+                {% endif %}
+
+
+
+                <!-- =========================
+                     SAFETY GUIDANCE
+                ========================= -->
+
+                <h2>
+                    Safety Guidance
+                </h2>
+
+                <ul class="safety-list">
+
+                    <li>
+                        ✓ Monitor official disaster warnings
+                    </li>
+
+                    <li>
+                        ✓ Keep emergency contacts accessible
+                    </li>
+
+                    <li>
+                        ✓ Avoid flooded roads and coastal areas
+                    </li>
+
+                    <li>
+                        ✓ Identify the nearest safe shelter
+                    </li>
+
+                    <li>
+                        ✓ Follow evacuation instructions from authorities
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             BACK LINK
+        ========================= -->
+
+        <a
+            href="/"
+            class="back-link"
+        >
+            ← Back to Command Center
+        </a>
+
+
+    </main>
+
+
+</body>
+
+</html>

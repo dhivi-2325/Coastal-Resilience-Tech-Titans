@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Coastal Resilience & Disaster Management</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <span class="logo-icon">◈</span>
+
+            <div>
+                <h2>CoastalResilience</h2>
+
+                <small>
+                    Disaster Intelligence System
+                </small>
+            </div>
+
+        </div>
+
+
+        <div class="nav-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/map">
+                Risk Map
+            </a>
+
+            <a href="/alerts">
+                Alerts
+            </a>
+
+            <a href="/authority">
+                Resources
+            </a>
+
+        </div>
+
+
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            System Online
+
+        </div>
+
+    </nav>
+
+
+    <!-- Hero Section -->
+    <main class="hero">
+
+        <div class="hero-content">
+
+            <div class="badge">
+                AI-POWERED DISASTER MANAGEMENT
+            </div>
+
+
+            <h1>
+
+                Building Safer
+
+                <span>
+                    Coastal Communities
+                </span>
+
+            </h1>
+
+
+            <p class="hero-text">
+
+                Predict hazards, assess village-level risk,
+                visualize affected areas and support faster
+                disaster response through intelligent
+                data-driven decision support.
+
+            </p>
+
+
+            <!-- Main Actions -->
+            <div class="hero-buttons">
+
+                <a
+                    href="/community"
+                    class="primary-btn"
+                >
+                    Community Dashboard
+                </a>
+
+
+                <a
+                    href="/authority"
+                    class="secondary-btn"
+                >
+                    Authority Dashboard
+                </a>
+
+
+                <a
+                    href="/scenario"
+                    class="alert-btn"
+                >
+                    Run Disaster Scenario
+                </a>
+
+            </div>
+
+
+            <!-- Process -->
+            <div class="process">
+
+                <div class="process-item">
+
+                    <strong>
+                        01
+                    </strong>
+
+                    <span>
+                        Predict
+                    </span>
+
+                </div>
+
+
+                <div class="process-line"></div>
+
+
+                <div class="process-item">
+
+                    <strong>
+                        02
+                    </strong>
+
+                    <span>
+                        Assess Risk
+                    </span>
+
+                </div>
+
+
+                <div class="process-line"></div>
+
+
+                <div class="process-item">
+
+                    <strong>
+                        03
+                    </strong>
+
+                    <span>
+                        Map
+                    </span>
+
+                </div>
+
+
+                <div class="process-line"></div>
+
+
+                <div class="process-item">
+
+                    <strong>
+                        04
+                    </strong>
+
+                    <span>
+                        Alert
+                    </span>
+
+                </div>
+
+
+                <div class="process-line"></div>
+
+
+                <div class="process-item">
+
+                    <strong>
+                        05
+                    </strong>
+
+                    <span>
+                        Prepare
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Right Information Panel -->
+        <div class="hero-panel">
+
+            <div class="panel-header">
+
+                <span>
+                    LIVE RISK OVERVIEW
+                </span>
+
+                <span class="live">
+                    ● LIVE
+                </span>
+
+            </div>
+
+
+            <div class="risk-card high">
+
+                <div>
+
+                    <small>
+                        HIGH RISK
+                    </small>
+
+                    <h3>
+                        03 Villages
+                    </h3>
+
+                </div>
+
+                <span>
+                    !
+                </span>
+
+            </div>
+
+
+            <div class="risk-card medium">
+
+                <div>
+
+                    <small>
+                        MEDIUM RISK
+                    </small>
+
+                    <h3>
+                        08 Villages
+                    </h3>
+
+                </div>
+
+                <span>
+                    !
+                </span>
+
+            </div>
+
+
+            <div class="risk-card low">
+
+                <div>
+
+                    <small>
+                        LOW RISK
+                    </small>
+
+                    <h3>
+                        24 Villages
+                    </h3>
+
+                </div>
+
+                <span>
+                    ✓
+                </span>
+
+            </div>
+
+
+            <div class="panel-footer">
+
+                <span>
+                    Last updated
+                </span>
+
+                <strong>
+                    Just now
+                </strong>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Bottom Feature Cards -->
+    <section class="features">
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                ◉
+            </div>
+
+            <h3>
+                AI Prediction
+            </h3>
+
+            <p>
+                Predict hazard conditions and estimate
+                local disaster risk.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                ⌖
+            </div>
+
+            <h3>
+                GIS Risk Mapping
+            </h3>
+
+            <p>
+                Visualize village-level risk and
+                affected locations.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                !
+            </div>
+
+            <h3>
+                Smart Alerts
+            </h3>
+
+            <p>
+                Deliver targeted warnings based on
+                location and risk.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                +
+            </div>
+
+            <h3>
+                Resource Planning
+            </h3>
+
+            <p>
+                Support shelter, food, water and
+                emergency resource planning.
+            </p>
+
+        </div>
+
+
+    </section>
+
+</body>
+
+</html>
